@@ -6,7 +6,7 @@ Queries used for Tableau Project
 
 
 
--- 1. 
+-- 1.  Total Cases, Total Deaths, and Death Percentage
 
 SELECT SUM(new_cases) AS total_cases,  
        SUM(CAST(new_deaths AS INT)) AS total_deaths,  
@@ -30,7 +30,7 @@ ORDER BY 1,2;
 --order by 1,2
 
 
--- 2. 
+-- 2.  Total Death Count by Location (For Non-Continents)
 
 -- We take these out as they are not inluded in the above queries and want to stay consistent
 -- European Union is part of Europe
@@ -44,7 +44,7 @@ Group by location
 order by TotalDeathCount desc
 
 
--- 3.
+-- 3.Highest Infection Count Per Location
 
 Select Location, Population, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
 From [Portfolio Project]..CovidDeaths
@@ -53,7 +53,7 @@ Group by Location, Population
 order by PercentPopulationInfected desc
 
 
--- 4.
+-- 4.Highest Infection Count Per Location By Date
 
 
 Select Location, Population,date, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
@@ -73,11 +73,10 @@ order by PercentPopulationInfected desc
 
 
 
--- Queries I originally had, but excluded some because it created too long of video
--- Here only in case you want to check them out
 
 
--- 1.
+
+-- 1.Rolling Total of Vaccinations Per Location
 
 Select dea.continent, dea.location, dea.date, dea.population
 , MAX(vac.total_vaccinations) as RollingPeopleVaccinated
@@ -93,7 +92,8 @@ order by 1,2,3
 
 
 
--- 2.
+-- 2.Breakdown of COVID-19 Data With Population
+
 Select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(New_Cases)*100 as DeathPercentage
 From [Portfolio Project]..CovidDeaths
 --Where location like '%states%'
@@ -114,10 +114,9 @@ order by 1,2
 --order by 1,2
 
 
--- 3.
+-- 3.Cumulative Death Count by Location
 
--- We take these out as they are not inluded in the above queries and want to stay consistent
--- European Union is part of Europe
+-- Excludes  global aggregations like "World," "European Union," and "International." to avoid duplicate counting.
 
 Select location, SUM(cast(new_deaths as int)) as TotalDeathCount
 From [Portfolio Project]..CovidDeaths
@@ -129,7 +128,7 @@ order by TotalDeathCount desc
 
 
 
--- 4.
+-- 4.Highest Infection Count Per Location
 
 Select Location, Population, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
 From [Portfolio Project]..CovidDeaths
@@ -139,7 +138,7 @@ order by PercentPopulationInfected desc
 
 
 
--- 5.
+-- 5. COVID-19 Data with Population
 
 --Select Location, date, total_cases,total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 --From PortfolioProject..CovidDeaths
@@ -155,7 +154,7 @@ where continent is not null
 order by 1,2
 
 
--- 6. 
+-- 6. Cumulative Vaccination Progress (Using CTE)
 
 
 With PopvsVac (Continent, Location, Date, Population, New_Vaccinations, RollingPeopleVaccinated)
@@ -175,7 +174,7 @@ Select *, (RollingPeopleVaccinated/Population)*100 as PercentPeopleVaccinated
 From PopvsVac
 
 
--- 7. 
+-- 7. Highest Infection Count Per Location By Date
 
 Select Location, Population,date, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
 From [Portfolio Project]..CovidDeaths
